@@ -1,5 +1,5 @@
 # PlateAnalyze
-It aims to test of usage [Apache Storm](https://github.com/apache/storm) and [Cassandra](http://cassandra.apache.org/)
+It aims to test of usage [Apache Storm](https://github.com/apache/storm), [Cassandra](http://cassandra.apache.org/), [Apache Flux](https://github.com/apache/storm/tree/master/external/flux), [Apache Flume](https://flume.apache.org/) and [Kafka](http://kafka.apache.org/)
 
 This project is maven based java project.
 
