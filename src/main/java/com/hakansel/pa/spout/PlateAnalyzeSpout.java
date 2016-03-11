@@ -13,9 +13,10 @@ import backtype.storm.topology.OutputFieldsDeclarer;
 import backtype.storm.topology.base.BaseRichSpout;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
+
 /*
  * spout listens tcp port for the data as string.
- * 
+ *
  * */
 public class PlateAnalyzeSpout extends BaseRichSpout
 {

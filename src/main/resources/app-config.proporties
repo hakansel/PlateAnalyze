@@ -1,0 +1,17 @@
+# TCP Stream source
+pa.tcp.host = 127.0.0.1
+pa.tcp.port = 3367
+
+# Cassandra infos
+pa.cassandra.host = 127.0.0.1
+pa.cassandra.keyspace = plateanalyze
+pa.cassandra.columnfamily = eventtable
+
+# redlist
+pa.plate.redlist = 35ab999,36ab999,37ab999,38ab999
+  
+# blacklist
+pa.plate.blacklist = 33ab999,34ab999
+
+# monitoring time interval
+pa.monitoring.time.interval = 300000

@@ -15,7 +15,7 @@ import com.datastax.driver.core.Session;
 /*
  * this bolt checks cassandra env and if needed create new keyspace and columnfamily.
  * if it gets 'true' value, store to cassandra.
- * 
+ *
  * */
 public class EventStoreBolt extends BaseRichBolt
 {
@@ -39,7 +39,7 @@ public class EventStoreBolt extends BaseRichBolt
 	 * Connecting cassandra
 	 * and
 	 * Checking existing status of keyspace and columnfamily if not exist create new one.
-	 * 
+	 *
 	 * */
 	@Override
 	public void prepare(Map stormConf, TopologyContext context, OutputCollector collector)
@@ -71,7 +71,7 @@ public class EventStoreBolt extends BaseRichBolt
 
 	/*
 	 * Store event with id(event_id) and event store time(event_no) within unix timestamp to cassandra
-	 * 
+	 *
 	 * */
 	@Override
 	public void execute(Tuple input)

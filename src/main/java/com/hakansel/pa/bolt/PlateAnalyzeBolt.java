@@ -14,19 +14,21 @@ import backtype.storm.tuple.Values;
 /*
  * This bolt tracks the 'Plate' to detect the sequence in red list and black list within 5 min interval.
  * if it detects it, emit 'true' to other bolt
- * 
+ *
  * */
 public class PlateAnalyzeBolt extends BaseRichBolt
 {
 	private static final long	serialVersionUID	= 1L;
 
-	private static final Long	LOG_INTERVAL		= (long)(5 * 60 * 1000);	/*5 min interval*/
+	//	private static final Long	LOG_INTERVAL		= (long)(5 * 60 * 1000);	/*5 min interval*/
 
 	private Integer				blackCounter;
 	private Integer				redCounter;
 	private List<String>		redList;
 	private List<String>		blackList;
 	private long				lastLogTime;
+
+	private Long				logInterval;
 
 	private OutputCollector		outputCollector;
 
@@ -55,26 +57,37 @@ public class PlateAnalyzeBolt extends BaseRichBolt
 		String plate = (String)tuple.getValueByField("Plate");
 
 		if (this.redList.contains(plate))
+		{
 			this.redCounter++;
+		}
 		if (this.blackList.contains(plate))
+		{
 			this.blackCounter++;
+		}
 		long now = System.currentTimeMillis();
 		long logPeriod = now - lastLogTime;
 
-		if ((this.redCounter == 2) && (this.blackCounter == 3) && (logPeriod <= LOG_INTERVAL))
+		if ((this.redCounter == 2) && (this.blackCounter == 3) && (logPeriod <= this.logInterval))
 		{
 			this.outputCollector.emit(new Values(true));
 			this.redCounter = 0;
 			this.blackCounter = 0;
 		}
-		if (logPeriod > LOG_INTERVAL)
+		if (logPeriod > this.logInterval)
+		{
 			this.lastLogTime = now;
+		}
 	}
 
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer)
 	{
 		outputFieldsDeclarer.declare(new Fields("Event"));
+	}
+
+	public void setLogInterval(Long logInterval)
+	{
+		this.logInterval = logInterval;
 	}
 
 }
