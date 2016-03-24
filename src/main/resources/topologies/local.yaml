@@ -1,50 +1,70 @@
 name: "plate-analyze"
 config:
     topology.workers: 1
-	
+
+components:
+    -   id: "zkHosts"
+        className: "storm.kafka.ZkHosts"
+        constructorArgs:
+            - "${kafka.zk}"
+    -   id: "kafkaConfig"
+        className: "storm.kafka.SpoutConfig"
+        constructorArgs:
+            # zookeeper hosts
+            - ref: "zkHosts"
+            # topic name
+            - "${spout.kafka.topic.plateanalyze}"
+            # zk root
+            - ""
+            # id
+            - "${spout.kafka.topic.plateanalyze}"
+        properties:
+            -   name: "ignoreZkOffsets"
+                value: true
+            -   name: "startOffsetTime"
+                value: -1
+
 # spouts
 spouts:
-    -   id: "plateAnalyzeSpout"
-    classname: "com.hakansel.pa.spout.PlateAnalyzeSpout"
-    constructorArgs:
-        - "${pa.tcp.port}"
-    parallelism: 1
+    -   id: "kafkaSpout"
+        className: "storm.kafka.KafkaSpout"
+        constructorArgs:
+            - ref: "kafkaConfig"
 
 # bolts
 bolts:
-	- id: "plateAnalyzeBolt"
-	  classname: "com.hakansel.pa.spout.PlateAnalyzeBolt"
-	  constructorArgs:
-	  	- "${pa.plate.redlist}"
-	  	- "${pa.plate.blacklist}"
-	  configMethods:
-	  	- name: "setLogInterval"
-	  	  args:
-	  		- "${pa.monitoring.time.interval}"
-	  parallelism: 1
-	  
-	- id: "eventStoreBolt"
-	  classname: "com.hakansel.pa.spout.EventStoreBolt"
-	  constructorArgs:
-	  	- "${pa.cassandra.host}"
-	  	- "${pa.cassandra.keyspace}"
-	  	- "${pa.cassandra.columnfamily}"
-	  parallelism: 1
+    -   id: "plateAnalyzeBolt"
+        classname: "com.hakansel.pa.spout.PlateAnalyzeBolt"
+        constructorArgs:
+            - "${kafka.zk}"
+            - "${spout.kafka.topic.snort}"
+            - "${pa.plate.redlist}"
+            - "${pa.plate.blacklist}"
+        configMethods:
+            - name: "setLogInterval"
+        args:
+            - "${pa.monitoring.time.interval}"
+        parallelism: 1
+
+    -  id: "eventStoreBolt"
+       classname: "com.hakansel.pa.spout.EventStoreBolt"
+       constructorArgs:
+           - "${pa.cassandra.host}"
+           - "${pa.cassandra.keyspace}"
+           - "${pa.cassandra.columnfamily}"
+       parallelism: 1
 
 # streams
 streams:
-	- name: "plateAnalyzeSpout" --> "plateAnalyzeBolt"
-	  from: "plateAnalyzeSpout"
-	  to: "plateAnalyzeBolt"
-	  grouping:
-	  	type: SHUFFLE
-	  	args: ["Plate"]
-	  	
-	- name: "plateAnalyzeBolt" --> "eventStoreBolt"
-	  from: "plateAnalyzeBolt"
-	  to: "eventStoreBolt"
-	  grouping:
-	  	type: SHUFFLE
-	  	args: ["Event"]
-	  	
-	
+    -   name: "kafkaSpout -> plateAnalyzeBolt"
+        from: "plateAnalyzeSpout"
+        to: "plateAnalyzeBolt"
+        grouping:
+            type: SHUFFLE
+
+    -   name: "plateAnalyzeBolt -> eventStoreBolt"
+        from: "plateAnalyzeBolt"
+        to: "eventStoreBolt"
+        grouping:
+            type: SHUFFLE
+            args: ["Event"]

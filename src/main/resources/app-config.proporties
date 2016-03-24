@@ -1,6 +1,6 @@
-# TCP Stream source
-pa.tcp.host = 127.0.0.1
-pa.tcp.port = 3367
+# Kafka topics
+spout.kafka.topic.plateanalyze = plateanalyze
+kafka.zk = localhost:2181
 
 # Cassandra infos
 pa.cassandra.host = 127.0.0.1
