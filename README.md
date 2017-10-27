@@ -8,5 +8,5 @@ This project is maven based java project.
 * It accepts streams via tcp socket to spout.
 * (TODO) It must accept stream via [Apache Flume](https://flume.apache.org/) and [Kafka Spout](https://github.com/apache/storm/tree/master/external/storm-kafka) rather than tcp.
 * It writes results to Cassandra if it detects right sequence of plates.
-* (TODO) It must be run without any tcp input. (Kafka Spout generated)
+* (TODO) It must be run without any tcp input, means auto generated. (Kafka Spout generated)
 
