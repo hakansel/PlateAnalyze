@@ -9,6 +9,4 @@ This project is maven based java project.
 * (TODO) It must accept stream via [Apache Flume](https://flume.apache.org/) and [Kafka Spout](https://github.com/apache/storm/tree/master/external/storm-kafka) rather than tcp.
 * It writes results to Cassandra if it detects right sequence of plates.
 * (TODO) It must be run without any tcp input, means auto generated. (Kafka Spout generated)
-* (TODO) It must use error topic to write error logs.
-* (TODO) Error topic consumer must consume the errors then writes to error table in cassandra.
 
